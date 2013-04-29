@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script src="/static/js/update_data.js"></script>
+<script src="http://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&sensor=true&language=ru"></script>
+<script src="/static/libs/gmap3.min.js"></script>
+<script src="/static/js/map.js"></script>
+
+<script>
+
+var availability = {% if data.availability %} 1 {% else %} 0 {% endif %};
+var current_position = {% if data.location %} '{{ data.location }}'.split(',') {% else %} false {% endif %};
+
+function availability_disabled(){
+  return $('#availability').val() == 0;
+}
+
+$(function() {
+  $('#message').val('{{ data.message }}');
+  $('#availability').val(availability);
+  $('#availability').slider('refresh');
+  $('#message').val('{{ data.message }}');
+  $('#availability').change(function() {
+    var value = parseInt(this.value);
+    var name = this.name;
+    if (value == 1) {
+      update_location();
+    } else {
+      if (availability_disabled()) {
+        $('#map').gmap3('destroy');
+      }
+    }
+    update_data(name, value);
+  });
+  if (current_position) {
+    show_map('map', current_position);
+  }
+});
+
+function update_location_manual(){
+  if (!availability_disabled()) {
+    update_location();
+  }
+}
+
+function update_location(){
+  navigator.geolocation.getCurrentPosition(function(position) {
+    current_position = [position.coords.latitude, position.coords.longitude]
+    update_data('location', JSON.stringify(current_position));
+    $('#map').gmap3('destroy');
+    show_map('map', current_position);
+  });
+}
+
+function update_message() {
+  update_data('message', $('#message').val());
+}
+
+</script>
+
+<div data-role="page" id="home_page">
+  <div data-theme="a" data-role="header">
+    <a href="/visibility" data-icon="gear" data-iconpos="notext" class="ui-btn-right">Настройки</a>
+    <h3>
+      Hangout
+    </h3>
+  </div>
+  <div data-role="content">
+    <div class="text-center">
+      <div id="availability_container">
+        <select name="availability" id="availability" data-role="slider">
+          <option value="0">Оффлайн</option>
+          <option value="1">Онлайн</option>
+        </select>
+      </div>
+      <textarea id="message" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset"></textarea>
+      <a data-role="button" href="javascript:update_message()">
+        Сохранить сообщение
+      </a>
+    </div>
+    <a data-role="button" href="javascript:update_location_manual()">
+      Обновить местоположение
+    </a>
+    <div id="map" class="map"></div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+h1, h2, h3 {
+    line-height: normal;
+}
+
+#lnkDialog {
+    display: none;
+}
+
+.map {
+    width: 100%;
+    height: 200px;
+    box-shadow: 0 2px 4px #999999;
+    border-radius: 8px 8px 8px 8px;
+}
+
+#availability_container .ui-slider-switch { width: 9em }

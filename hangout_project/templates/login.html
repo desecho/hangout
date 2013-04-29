@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+function submit() {
+  $('#login').submit();
+}
+
+</script>
+
+<div data-role="page" id="home_page">
+  <div data-theme="a" data-role="header">
+    <h3>
+      Hangout
+    </h3>
+  </div>
+  <div data-role="content">
+    <form id="login" method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
+      {% csrf_token %}
+      <input placeholder="Имя пользователя" type="text" name="username" required {% if form.username.value %} value="{{ form.username.value}}" {% endif %} autofocus>
+      <input placeholder="Пароль" type="password" name="password" required {% if form.password.value %} value="{{ form.password.value}}" {% endif %}>
+      {% if form.errors %}
+        <div class="control-group">
+          <div class="controls">
+            <span class="text-error">Вы ввели неправильный логин/пароль.</span>
+          </div>
+        </div>
+      {% endif %}
+      <a data-role="button" href="javascript:submit()">
+        Войти
+      </a>
+    </form>
+      <input type="hidden" name="next" value="{{ next }}">
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script src="http://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&sensor=true&language=ru"></script>
+<script src="/static/libs/gmap3.min.js"></script>
+<script src="/static/js/map.js"></script>
+
+<script>
+      $(function(){
+        {% for user_data in users_data %}
+          {% if user_data.location %} show_map('map-{{ user_data.pk }}', '{{ user_data.location }}'.split(',')); {% endif %}
+        {% endfor %}
+      });
+</script>
+
+<div data-role="page" id="home_page">
+  <div data-theme="a" data-role="header">
+    <a href="/" data-icon="home" data-iconpos="notext">Home</a>
+    <a href="/visibility" data-icon="gear" data-iconpos="notext" class="ui-btn-right">Настройки</a>
+    <h3>
+      Hangout
+    </h3>
+  </div>
+  <div data-role="content">
+    {% if users_data %}
+      Участники -
+      {% for user_data in users_data %}
+        {{ user_data.user.username }}{% include 'helpers/comma.html' %}
+      {% endfor %}
+      {% for user_data in users_data %}
+        <h3>{{ user_data.user.username }}</h3>
+        {% if user_data.message %} {{ user_data.message }}<br> {% endif %}
+        {% if user_data.location %}<div id="map-{{ user_data.pk }}" class="map"></div>{% endif %}
+      {% endfor %}
+    {% else %}
+      {{ message }}
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
