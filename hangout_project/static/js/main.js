@@ -36,3 +36,8 @@ jQuery(document).ajaxSend(function(event, xhr, settings) {
         xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
     }
 });
+
+
+$(document).bind('mobileinit', function () {
+    $.mobile.ajaxEnabled = false;
+});

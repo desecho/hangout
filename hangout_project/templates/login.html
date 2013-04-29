@@ -15,7 +15,7 @@ function submit() {
     </h3>
   </div>
   <div data-role="content">
-    <form id="login" method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
+    <form id="login" method="post" action="{% url 'django.contrib.auth.views.login' %}">
       {% csrf_token %}
       <input placeholder="Имя пользователя" type="text" name="username" required {% if form.username.value %} value="{{ form.username.value}}" {% endif %} autofocus>
       <input placeholder="Пароль" type="password" name="password" required {% if form.password.value %} value="{{ form.password.value}}" {% endif %}>
@@ -29,8 +29,9 @@ function submit() {
       <a data-role="button" href="javascript:submit()">
         Войти
       </a>
-    </form>
+      <input type="submit" value="Submit Button" id="login-submit-button">
       <input type="hidden" name="next" value="{{ next }}">
+    </form>
   </div>
 </div>
 {% endblock %}

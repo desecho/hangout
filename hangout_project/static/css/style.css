@@ -13,4 +13,10 @@ h1, h2, h3 {
     border-radius: 8px 8px 8px 8px;
 }
 
-#availability_container .ui-slider-switch { width: 9em }
+#availability_container .ui-slider-switch {
+    width: 9em
+}
+
+#login-submit-button {
+    visibility: hidden;
+}
