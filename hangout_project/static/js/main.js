@@ -37,7 +37,8 @@ jQuery(document).ajaxSend(function(event, xhr, settings) {
     }
 });
 
-
-$(document).bind('mobileinit', function () {
+$(document).bind('pageinit', function () {
+    $.mobile.defaultPageTransition = 'none';
+    $.mobile.pushStateEnabled = false;
     $.mobile.ajaxEnabled = false;
 });

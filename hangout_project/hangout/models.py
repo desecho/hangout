@@ -2,6 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class UserData(models.Model):
     user = models.ForeignKey(User, verbose_name='пользователь')
     availability = models.BooleanField('доступность')
@@ -23,8 +24,8 @@ class UserData(models.Model):
 class Visibility(models.Model):
     user = models.ForeignKey(User, related_name='user', verbose_name='пользователь')
     friend = models.ForeignKey(User, related_name='friend', verbose_name='друг')
-    visible = models.BooleanField('видимость')
-    visible_updated = models.BooleanField('видимость_обновленная')
+    visible = models.BooleanField('видимость', default=True)
+    visible_updated = models.BooleanField('видимость_обновленная', default=True)
 
     class Meta:
         verbose_name = 'видимость'

@@ -1,10 +1,11 @@
 from django.core.management.base import BaseCommand
-from hangout.models import UserData, Visibility, Meeting, UserMeeting
+from hangout.models import UserData, Meeting, UserMeeting
 import random
 import googl
 from hangout import littlesms
 from django.conf import settings
 from django.contrib.sites.models import Site
+
 
 class Command(BaseCommand):
     help = 'Finds matches'
