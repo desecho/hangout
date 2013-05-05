@@ -15,6 +15,12 @@ def logout_view(request):
     return redirect('/login/')
 
 
+@render_to('help.html')
+@login_required
+def help(request):
+    return {}
+
+
 @render_to('index.html')
 @login_required
 def home(request):

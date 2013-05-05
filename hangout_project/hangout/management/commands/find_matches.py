@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from hangout.models import UserData, Meeting, UserMeeting
+from hangout.models import UserData, Meeting, UserMeeting, Visibility
 import random
 import googl
 from hangout import littlesms
@@ -79,22 +79,22 @@ class Command(BaseCommand):
             if meeting.exists():
                 return meeting
 
-        def find_matches_3():
+        def find_matches_3(users_data):
             if users_data.count() > 2:
                 users_meeting_new = get_users_not_in_meeting(users_data)
-                    if users_meeting_new:
-                        meeting = get_meeting()
-                        add_users_to_meeting(users_meeting_new, meeting)
-                        send_sms_messages(users_meeting_new, meeting, None, users_data)
+                if users_meeting_new:
+                    meeting = get_meeting()
+                    add_users_to_meeting(users_meeting_new, meeting)
+                    send_sms_messages(users_meeting_new, meeting, None, users_data)
                 else:
                     start_meeting(users_data)
 
-        def find_matches_2():
+        def find_matches_2(users_data):
             def users_can_see_each_other():
-                user1 = user_data[0].user
-                user2 = user_data[1].user
-                user1_visible_to_all = user_data[0].visible_to_all
-                user2_visible_to_all = user_data[1].visible_to_all
+                user1 = users_data[0].user
+                user2 = users_data[1].user
+                user1_visible_to_all = users_data[0].visible_to_all
+                user2_visible_to_all = users_data[1].visible_to_all
                 return check_if_user_is_visible(user1, user2, user1_visible_to_all) and check_if_user_is_visible(user2, user1, user2_visible_to_all)
 
             def check_if_user_is_visible(user, friend, visible_to_all):
@@ -109,5 +109,5 @@ class Command(BaseCommand):
                         start_meeting(users_data)
 
         users_data = UserData.objects.filter(availability=True)
-        find_matches_3()
-        find_matches_2()
+        find_matches_3(users_data)
+        find_matches_2(users_data)

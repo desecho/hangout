@@ -10,6 +10,7 @@ urlpatterns = patterns(
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     url(r'^logout/$', 'hangout.views.logout_view'),
     url(r'^visibility/$', 'hangout.views.visibility'),
+    url(r'^help/$', 'hangout.views.help'),
     url(r'^update-data/$', 'hangout.views.update_data'),
     url(r'^change-visibility/$', 'hangout.views.change_visibility'),
     url(r'^meeting/(?P<id>\d+)/$', 'hangout.views.meeting'),

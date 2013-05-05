@@ -1,49 +1,42 @@
 {% extends "base.html" %}
-{% block content %}
 
-<script src="/static/js/update_data.js"></script>
-<script>
+{% block head %}
+  <script src="/static/js/update_data.js"></script>
+  <script>
+  var visible_to_all = {% if data.visible_to_all %} 1 {% else %} 0 {% endif %};
+  var one_on_one = {% if data.one_on_one %} 1 {% else %} 0 {% endif %};
 
-var visible_to_all = {% if data.visible_to_all %} 1 {% else %} 0 {% endif %};
-var one_on_one = {% if data.one_on_one %} 1 {% else %} 0 {% endif %};
-
-$(function() {
-  $('#visible_to_all').val(visible_to_all);
-  $('#one_on_one').val(one_on_one);
-  $('.slider').slider('refresh');
-  $('.slider').change(function() {
-    update_data(this.name, this.value);
-  });
-  $('#visible_to_all').slider('disable');
-});
-
-function change_visibility(id, value) {
-    $.post('/change-visibility/', {id: id, value: value},
-      function(data) {
-        if (value == 0) {
-          var html = '<a href="javascript:change_visibility(' + id + ', 1)"><i class="icon-ban-circle"></i></a>';
-        } else {
-          var html = '<a href="javascript:change_visibility(' + id + ', 0)"><i class="icon-eye-open"></i></a>';
-        }
-        $('#visibility-' + id).html(html);
-      }
-    ).error(function() {
-      $('#link_error_dialog').click();
+  $(function() {
+    $('#visible_to_all').val(visible_to_all);
+    $('#one_on_one').val(one_on_one);
+    $('.slider').slider('refresh');
+    $('.slider').change(function() {
+      update_data(this.name, this.value);
     });
-}
+  });
 
-</script>
+  function change_visibility(id, value) {
+      $.post('/change-visibility/', {id: id, value: value},
+        function(data) {
+          if (value == 0) {
+            var html = '<a href="javascript:change_visibility(' + id + ', 1)"><i class="icon-ban-circle"></i></a>';
+          } else {
+            var html = '<a href="javascript:change_visibility(' + id + ', 0)"><i class="icon-eye-open"></i></a>';
+          }
+          $('#visibility-' + id).html(html);
+        }
+      ).error(function() {
+        $('#link_error_dialog').click();
+      });
+  }
+  </script>
+{% endblock %}
 
+{% block menu %}
+  <a href="/" data-icon="home" data-iconpos="notext">Домой</a>
+{% endblock %}
 
-<div data-role="page" id="home_page">
-
-  <div data-theme="a" data-role="header">
-    <a href="/" data-icon="home" data-iconpos="notext">Home</a>
-    <h3>
-      Hangout
-    </h3>
-  </div>
-  <div data-role="content">
+{% block content %}
   <table class="table">
      <thead>
        <tr>
@@ -75,32 +68,28 @@ function change_visibility(id, value) {
     </tbody>
     </table>
     <div class="text-center">
-        <fieldset class="ui-grid-a">
-            <div class="ui-block-a">
-              <label for="visible_to_all">Видим всем</label>
-            </div>
-            <div class="ui-block-b">
-              <select class="slider" name="visible_to_all" id="visible_to_all" data-role="slider">
-                <option value="0">Выкл</option>
-                <option value="1">Вкл</option>
-              </select>
-            </div>
-            <div class="ui-block-a">
-              <label for="one_on_one"><i class="icon-user"></i> <i class="icon-user"></i></label>
-            </div>
-            <div class="ui-block-b">
-              <select class="slider" name="one_on_one" id="one_on_one" data-role="slider">
-                <option value="0">Выкл</option>
-                <option value="1">Вкл</option>
-              </select>
-            </div>
-        </fieldset>
-
+      <fieldset class="ui-grid-a">
+        <div class="ui-block-a">
+          <label for="visible_to_all">Видим всем</label>
+        </div>
+        <div class="ui-block-b">
+          <select class="slider" name="visible_to_all" id="visible_to_all" data-role="slider">
+            <option value="0">Выкл</option>
+            <option value="1">Вкл</option>
+          </select>
+        </div>
+        <div class="ui-block-a">
+          <label for="one_on_one"><i class="icon-user"></i> <i class="icon-user"></i></label>
+        </div>
+        <div class="ui-block-b">
+          <select class="slider" name="one_on_one" id="one_on_one" data-role="slider">
+            <option value="0">Выкл</option>
+            <option value="1">Вкл</option>
+          </select>
+        </div>
+      </fieldset>
     </div>
     <a data-role="button" href="/logout">
       Выход
     </a>
-  </div>
-</div>
-
 {% endblock %}

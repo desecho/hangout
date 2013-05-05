@@ -10,13 +10,25 @@
   <script src="/static/libs/bootstrap/js/bootstrap.min.js"></script>
   <script src="/static/js/main.js"></script>
 
+  {% block head %}{% endblock %}
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Hangout{% endblock %}</title>
 </head>
 <body>
   <div class="content">
-    {% block content %}{% endblock %}
+    <div data-role="page" id="home_page">
+      <div data-theme="a" data-role="header">
+        {% block menu %}{% endblock %}
+        <h3>
+          Hangout
+        </h3>
+      </div>
+      <div data-role="content">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
     <div data-role="page" id="error_dialog">
       <div data-role="header">
         <h2>Сообщение</h2>
