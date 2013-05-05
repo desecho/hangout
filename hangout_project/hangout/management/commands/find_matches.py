@@ -23,8 +23,8 @@ class Command(BaseCommand):
 
         def send_sms_messages(users_data, meeting, organizer=None, user_data_all=None):
             def send_sms(message, to):
-                sms.send(message, to, sender='Hangout')
-                #sms.send(message, to)
+                if settings.SEND_SMS:
+                    sms.send(message, to, sender='Hangout')
                 print(message, to)
 
             def get_users(users_data):
@@ -67,29 +67,47 @@ class Command(BaseCommand):
             add_users_to_meeting(users_data, meeting)
             send_sms_messages(users_data, meeting, get_random_user_data(users_data))
 
+        def get_users_not_in_meeting(users_data):
+            users_meeting = UserMeeting.objects.filter(meeting__active=True)
+            if users_meeting:
+                users_meeting = users_meeting.values_list('user_data')
+                users_meeting = [x[0] for x in users_meeting]
+                return users_data.exclude(pk__in=users_meeting)
+
+        def get_meeting():
+            meeting = Meeting.objects.filter(active=True)
+            if meeting.exists():
+                return meeting
+
         def find_matches_3():
-            users_data = UserData.objects.filter(availability=True)
-            if users_data.count() >= 3:
-                users_meeting = UserMeeting.objects.filter(meeting__active=True)
-                if users_meeting:
-                    meeting = users_meeting[0].meeting
-                    users_meeting = users_meeting.values_list('user_data')
-                    users_meeting = [x[0] for x in users_meeting]
-                    users_meeting_new = users_data.exclude(pk__in=users_meeting)
+            if users_data.count() > 2:
+                users_meeting_new = get_users_not_in_meeting(users_data)
                     if users_meeting_new:
+                        meeting = get_meeting()
                         add_users_to_meeting(users_meeting_new, meeting)
                         send_sms_messages(users_meeting_new, meeting, None, users_data)
                 else:
                     start_meeting(users_data)
 
         def find_matches_2():
-            users_data = UserData.objects.filter(availability=True, one_on_one=True)
-            if users_data.count() > 1:
-                users_meeting = UserMeeting.objects.filter(meeting__active=True).values_list('user_data')
-                users_meeting = [x[0] for x in users_meeting]
-                users_data = users_data.exclude(pk__in=users_meeting)
-                if users_data.count() > 1:
-                    start_meeting(users_data)
+            def users_can_see_each_other():
+                user1 = user_data[0].user
+                user2 = user_data[1].user
+                user1_visible_to_all = user_data[0].visible_to_all
+                user2_visible_to_all = user_data[1].visible_to_all
+                return check_if_user_is_visible(user1, user2, user1_visible_to_all) and check_if_user_is_visible(user2, user1, user2_visible_to_all)
 
+            def check_if_user_is_visible(user, friend, visible_to_all):
+                if not visible_to_all:
+                    return Visibility.objects.get(user=user, friend=friend).visible_updated
+                return True
+
+            if not get_meeting():
+                users_data = users_data.filter(one_on_one=True)
+                if users_data.count() == 2:
+                    if users_can_see_each_other():
+                        start_meeting(users_data)
+
+        users_data = UserData.objects.filter(availability=True)
         find_matches_3()
         find_matches_2()
