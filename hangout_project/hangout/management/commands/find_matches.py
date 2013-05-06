@@ -78,7 +78,7 @@ class Command(BaseCommand):
         def get_meeting():
             meeting = Meeting.objects.filter(active=True)
             if meeting.exists():
-                return meeting
+                return meeting[0]
 
         def find_matches_3(users_data):
             if users_data.count() > 2:
