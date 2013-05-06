@@ -5,29 +5,31 @@
   <script>
   var visible_to_all = {% if data.visible_to_all %} 1 {% else %} 0 {% endif %};
   var one_on_one = {% if data.one_on_one %} 1 {% else %} 0 {% endif %};
+  var sleep_time = "{{ data.sleep_disable_time|date:'H:i' }}";
 
   $(function() {
     $('#visible_to_all').val(visible_to_all);
     $('#one_on_one').val(one_on_one);
+    $('#sleep_time').val(sleep_time);
     $('.slider').slider('refresh');
-    $('.slider').change(function() {
+    $('.slider, #sleep_time').change(function() {
       update_data(this.name, this.value);
     });
   });
 
   function change_visibility(id, value) {
-      $.post('/change-visibility/', {id: id, value: value},
-        function(data) {
-          if (value == 0) {
-            var html = '<a href="javascript:change_visibility(' + id + ', 1)"><i class="icon-ban-circle"></i></a>';
-          } else {
-            var html = '<a href="javascript:change_visibility(' + id + ', 0)"><i class="icon-eye-open"></i></a>';
-          }
-          $('#visibility-' + id).html(html);
+    $.post('/change-visibility/', {id: id, value: value},
+      function(data) {
+        if (value == 0) {
+          var html = '<a href="javascript:change_visibility(' + id + ', 1)"><i class="icon-ban-circle"></i></a>';
+        } else {
+          var html = '<a href="javascript:change_visibility(' + id + ', 0)"><i class="icon-eye-open"></i></a>';
         }
-      ).error(function() {
-        $('#link_error_dialog').click();
-      });
+        $('#visibility-' + id).html(html);
+      }
+    ).error(function() {
+      $('#link_error_dialog').click();
+    });
   }
   </script>
 {% endblock %}
@@ -87,7 +89,15 @@
             <option value="1">Вкл</option>
           </select>
         </div>
+        <div class="ui-block-a">
+          <label for="visible_to_all">Время авто-перехода в Оффлайн</label>
+        </div>
+        <div class="ui-block-b">
+          <input id="sleep_time" name="sleep_time" type="text" data-role="datebox" data-options='{"useNewStyle":true, "mode": "timeflipbox", "useFocus": true, "useButton": false, "minuteStep": 60}'>
+        </div>
       </fieldset>
+
+
     </div>
     <a data-role="button" href="/logout">
       Выход

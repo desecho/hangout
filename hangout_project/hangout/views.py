@@ -2,13 +2,16 @@
 import json
 from django.shortcuts import redirect
 from hangout.models import UserData, Visibility, Meeting, UserMeeting
+from hangout.general import disable_availability
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from annoying.decorators import ajax_request, render_to
 from django.http import HttpResponse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import chromelogger as console
+
 
 def logout_view(request):
     logout(request)
@@ -53,21 +56,6 @@ def meeting(request, id):
 
 
 def update_data(request):
-    def remove_location_if_necessary(data):
-        if not data.availability:
-            data.location = ''
-        return data
-
-    def update_meeting_data():
-        if not value:
-            if UserMeeting.objects.filter(user_data__user=request.user).exists():
-                user_meeting = UserMeeting.objects.get(user_data__user=request.user)
-                meeting = user_meeting.meeting
-                user_meeting.delete()
-                if UserMeeting.objects.filter(meeting=meeting).count() < 2:
-                    meeting.active = False
-                    meeting.save()
-
     if request.is_ajax() and request.method == 'POST':
         POST = request.POST
         data = UserData.objects.get(user=request.user)
@@ -75,19 +63,27 @@ def update_data(request):
             data.message = POST['message']
         if 'one_on_one' in POST:
             data.one_on_one = int(POST['one_on_one'])
-        if 'availability' in POST:
-            value = int(POST['availability'])
-            data.availability = value
-            update_meeting_data()
-            data = remove_location_if_necessary(data)
         if 'visible_to_all' in POST:
             data.visible_to_all = int(POST['visible_to_all'])
         if 'location' in POST:
             location = json.loads(POST['location'])
             location = [str(x) for x in location]
             data.location = ','.join(location)
+        if 'sleep_time' in POST:
+            data.sleep_disable_time = datetime.strptime(POST['sleep_time'], settings.TIME_FORMAT)
+        if 'timer' in POST:
+            timer = datetime.strptime(POST['timer'], settings.TIME_FORMAT)
+            data.timer_disable_time = datetime.now() + relativedelta(hours=timer.hour, minutes=timer.minute)
         data.save()
+        if 'availability' in POST:
+            availability = int(POST['availability'])
+            if not availability:
+                disable_availability(data)
+            else:
+                data.availability = True
+                data.save()
         return HttpResponse()
+
 
 def change_visibility(request):
     if request.is_ajax() and request.method == 'POST':

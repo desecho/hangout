@@ -10,7 +10,8 @@ class UserData(models.Model):
     location = models.CharField('местонахождение', max_length=255, null=True, blank=True)
     message = models.CharField('сообщение', max_length=255, null=True, blank=True)
     phone = models.BigIntegerField('телефон')
-    availability_disable_time = models.DateTimeField('время автоотключение доступности', null=True, blank=True)
+    timer_disable_time = models.DateTimeField('время отключения доступности по таймеру', null=True, blank=True)
+    sleep_disable_time = models.TimeField('время автоотключения доступности')
     visible_to_all = models.BooleanField('видим всем', default=True)
 
     class Meta:

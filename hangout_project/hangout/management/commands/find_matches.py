@@ -27,8 +27,12 @@ class Command(BaseCommand):
                     sms.send(message, to, sender='Hangout')
                 print(message, to)
 
-            def get_users(users_data):
-                return ', '.join([x.user.username for x in users_data])
+            def get_users():
+                if user_data_all:
+                    users = user_data_all
+                else:
+                    users = users_data
+                return ', '.join([x.user.username for x in users])
 
             def get_phone_of_user_at_meeting():
                 users_new = users_data.values_list('pk')
@@ -36,10 +40,7 @@ class Command(BaseCommand):
                 users_meeting = user_data_all.exclude(pk__in=users_new)
                 return get_random_user_data(users_meeting).phone
 
-            if user_data_all:
-                users = get_users(user_data_all)
-            else:
-                users = get_users(users_data)
+            users = get_users()
             message = 'Uchastniki - %s. Podrobnee - %s' % (users, meeting.url)
             if user_data_all:
                 message_meeting = 'Novye Uchastniki! ' + message
@@ -81,26 +82,27 @@ class Command(BaseCommand):
 
         def find_matches_3(users_data):
             if users_data.count() > 2:
-                users_meeting_new = get_users_not_in_meeting(users_data)
-                if users_meeting_new:
-                    meeting = get_meeting()
-                    add_users_to_meeting(users_meeting_new, meeting)
-                    send_sms_messages(users_meeting_new, meeting, None, users_data)
+                meeting = get_meeting()
+                if meeting:
+                    users_new = get_users_not_in_meeting(users_data)
+                    if users_new:
+                        add_users_to_meeting(users_new, meeting)
+                        send_sms_messages(users_new, meeting, None, users_data)
                 else:
                     start_meeting(users_data)
 
         def find_matches_2(users_data):
             def users_can_see_each_other():
+                def check_if_user_is_visible(user, friend, visible_to_all):
+                    if not visible_to_all:
+                        return Visibility.objects.get(user=user, friend=friend).visible_updated
+                    return True
+
                 user1 = users_data[0].user
                 user2 = users_data[1].user
                 user1_visible_to_all = users_data[0].visible_to_all
                 user2_visible_to_all = users_data[1].visible_to_all
                 return check_if_user_is_visible(user1, user2, user1_visible_to_all) and check_if_user_is_visible(user2, user1, user2_visible_to_all)
-
-            def check_if_user_is_visible(user, friend, visible_to_all):
-                if not visible_to_all:
-                    return Visibility.objects.get(user=user, friend=friend).visible_updated
-                return True
 
             if not get_meeting():
                 users_data = users_data.filter(one_on_one=True)

@@ -20,3 +20,7 @@ h1, h2, h3 {
 #login-submit-button {
     visibility: hidden;
 }
+
+input[readonly] {
+    cursor: pointer;
+}

@@ -5,22 +5,33 @@
 <script src="/static/js/update_data.js"></script>
 <script src="http://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&sensor=true&language=ru"></script>
 <script src="/static/libs/gmap3.min.js"></script>
+<script src="/static/libs/date.js"></script>
+<script src="/static/libs/time.js"></script>
 <script src="/static/js/map.js"></script>
 
 <script>
 
 var availability = {% if data.availability %} 1 {% else %} 0 {% endif %};
 var current_position = {% if data.location %} '{{ data.location }}'.split(',') {% else %} false {% endif %};
+var timer = {% if data.timer_disable_time %} Date.parseExact('{{ data.timer_disable_time|date:"m/d/Y H:i:00" }}', "M/d/yyyy H:m:00") {% else %} '' {% endif %};
+var message = "{{ data.message }}";
 
 function availability_disabled(){
   return $('#availability').val() == 0;
 }
 
+function get_timer(){
+  var span = new TimeSpan(timer - new Date());
+  return span.hours + ':' + span.minutes;
+}
+
 $(function() {
-  $('#message').val('{{ data.message }}');
+  if (timer) {
+    $('#timer').val(get_timer());
+  }
   $('#availability').val(availability);
   $('#availability').slider('refresh');
-  $('#message').val('{{ data.message }}');
+  $('#message').val(message);
   $('#availability').change(function() {
     var value = parseInt(this.value);
     var name = this.name;
@@ -29,6 +40,7 @@ $(function() {
     } else {
       if (availability_disabled()) {
         $('#map').gmap3('destroy');
+        $('#timer').val('');
       }
     }
     update_data(name, value);
@@ -36,6 +48,9 @@ $(function() {
   if (current_position) {
     show_map('map', current_position);
   }
+  $('#timer').change(function() {
+    update_data(this.name, this.value);
+  });
 });
 
 function update_location_manual(){
@@ -74,7 +89,8 @@ function update_message() {
         <option value="1">Онлайн</option>
       </select>
     </div>
-    <textarea id="message" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset"></textarea>
+    <input id="timer" name="timer" placeholder="Таймер" type="text" data-role="datebox" data-options='{"useNewStyle":true, "mode": "timeflipbox", "useFocus": true, "useButton": false, "defaultValue": "00:00", "minuteStep": 15}'>
+    <textarea id="message" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" placeholder="Сообщение"></textarea>
     <a data-role="button" href="javascript:update_message()">
       Сохранить сообщение
     </a>
@@ -84,3 +100,5 @@ function update_message() {
   </a>
   <div id="map" class="map"></div>
 {% endblock %}
+
+
