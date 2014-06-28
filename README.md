@@ -1,6 +1,6 @@
 #Hangout
 
-The web application to organize spontaneous meetings. The interface is in Russian.
+The mobile web application on Python/Django/jQuery to organize spontaneous meetings. The interface is in Russian.
 
 ##Required packages
 
