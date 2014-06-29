@@ -1,5 +1,3 @@
-# Django settings for hangout_project project.
-
 import os, django
 
 DEBUG = True
@@ -72,7 +70,6 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     DJANGO_DIR + '/contrib/admin/static',
-    BASE_DIR + '/static'
 )
 
 # List of finder classes that know how to find static files in
@@ -176,3 +173,14 @@ GOOGLE_API_KEY = ''
 GOOGLE_MAPS_API_KEY = ''
 LITTLESMS_API_USER = ''
 LITTLESMS_API_KEY = ''
+SEND_SMS = True
+TIME_FORMAT = '%H:%M'
+
+
+try:
+    LOCAL_SETTINGS
+except NameError:
+    try:
+        from local_settings import *
+    except ImportError:
+        pass

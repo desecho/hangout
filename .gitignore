@@ -1,7 +1,14 @@
-*.py[cod]
 hangout_project/static/admin/
+hangout_project/static/bower/
 hangout_project/hangout_project/secret.py
-hangout_project/static/django_extensions
+hangout_project/hangout_project/local_settings.py
+
+
+*.py[cod]
+
+# OS X meta data
+._*
+.DS_Store
 
 # C extensions
 *.so

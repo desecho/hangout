@@ -10,7 +10,7 @@ from annoying.decorators import ajax_request, render_to
 from django.http import HttpResponse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import chromelogger as console
+#import chromelogger as console
 
 
 def logout_view(request):

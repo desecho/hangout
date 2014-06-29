@@ -1,0 +1,16 @@
+{
+  "name": "hangout",
+  "version": "0.1.0",
+  "dependencies": {
+    "jquery": "Used for jquery-mobile",
+    "jquery": "1.10.2",
+    "jquery-mobile-bower": "latest",
+    "jquery-mobile-datebox": "https://github.com/jtsage/jquery-mobile-datebox.git",
+    "jquery-mousewheel": "latest",
+    "datejs": "latest",
+    "gmap3": "latest",
+    "bootstrap": "~2",
+    "font-awesome": "latest"
+  },
+  "private": true
+}
