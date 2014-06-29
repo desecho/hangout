@@ -12,5 +12,9 @@ echo "*/10 * * * * $PYTHON_PATH/python $PWD/hangout_project/manage.py disable_ti
 crontab crontab
 rm crontab
 
-cd hangout_project/static/bower/jquery-mobile-datebox/i18n/
+cd hangout_project
+./manage.py syncdb
+./manage.py collectstatic
+
+cd static/bower/jquery-mobile-datebox/i18n/
 ./make-all-i18n.py

@@ -1,6 +1,9 @@
 #Hangout
-The mobile web application on Python/Django/jQuery to organize spontaneous meetings. The interface is in Russian.
-It uses Python 2 and Django 1.6.
+
+The mobile web application on Python2/Django/jQuery to organize spontaneous meetings.
+The interface is in Russian.
+
+Ceased development.
 
 ##Installation instructions
 * Change/Add the following variables in settings.py:
@@ -10,9 +13,4 @@ It uses Python 2 and Django 1.6.
     * LITTLESMS_API_USER
     * LITTLESMS_API_KEY
 * Change variable in installation_settings.sh
-* Run
-```
-python manage.py syncdb
-python manage.py collectstatic
-```
-
+* Run install.sh
