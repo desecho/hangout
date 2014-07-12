@@ -1,16 +1,16 @@
 # -*- coding: utf8 -*-
 import json
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from django.shortcuts import redirect
-from hangout.models import UserData, Visibility, Meeting, UserMeeting
-from hangout.general import disable_availability
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from annoying.decorators import ajax_request, render_to
 from django.http import HttpResponse
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-#import chromelogger as console
+from annoying.decorators import render_to
+
+from .models import UserData, Visibility, Meeting, UserMeeting
+from .general import disable_availability
 
 
 def logout_view(request):
@@ -34,8 +34,11 @@ def home(request):
 @render_to('visibility.html')
 @login_required
 def visibility(request):
-    users = Visibility.objects.filter(user=request.user).values_list('friend', 'friend__username', 'visible', 'visible_updated')
-    users = [{'id': x[0], 'name': x[1], 'visible': x[2], 'visible_updated': x[3]} for x in users]
+    users = Visibility.objects.filter(user=request.user) \
+                              .values_list('friend', 'friend__username',
+                                           'visible', 'visible_updated')
+    users = [{'id': x[0], 'name': x[1], 'visible': x[2],
+              'visible_updated': x[3]} for x in users]
     data = UserData.objects.get(user=request.user)
     return {'users': users, 'data': data}
 
@@ -70,10 +73,12 @@ def update_data(request):
             location = [str(x) for x in location]
             data.location = ','.join(location)
         if 'sleep_time' in POST:
-            data.sleep_disable_time = datetime.strptime(POST['sleep_time'], settings.TIME_FORMAT)
+            data.sleep_disable_time = datetime.strptime(POST['sleep_time'],
+                                                        settings.TIME_FORMAT)
         if 'timer' in POST:
             timer = datetime.strptime(POST['timer'], settings.TIME_FORMAT)
-            data.timer_disable_time = datetime.now() + relativedelta(hours=timer.hour, minutes=timer.minute)
+            data.timer_disable_time = datetime.now() + relativedelta(
+                hours=timer.hour, minutes=timer.minute)
         data.save()
         if 'availability' in POST:
             availability = int(POST['availability'])
@@ -90,7 +95,8 @@ def change_visibility(request):
         POST = request.POST
         if 'id' in POST and 'value' in POST:
             value = int(POST['value'])
-            visibility = Visibility.objects.get(user=request.user, friend=int(POST['id']))
+            visibility = Visibility.objects.get(user=request.user,
+                                                friend=int(POST['id']))
             if visibility.visible_updated != value:
                 visibility.visible_updated = value
                 visibility.save()

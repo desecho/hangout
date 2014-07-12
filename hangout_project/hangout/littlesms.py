@@ -10,13 +10,13 @@ import urllib
 
 # Find JSON lib
 try:
-    import json # Python >= 2.6
+    import json  # Python >= 2.6
 except ImportError:
     try:
-        import simplejson as json # Python <= 2.5
+        import simplejson as json  # Python <= 2.5
     except ImportError:
         try:
-            from django.utils import simplejson as json # Django
+            from django.utils import simplejson as json  # Django
         except ImportError:
             raise ImportError("JSON lib not found.")
 
@@ -59,7 +59,9 @@ def gae_opener():
 
 
 class ApiError(Exception):
+
     """Service exception class."""
+
     def __init__(self, code, message):
         self.code = code
         self.message = message
@@ -69,6 +71,7 @@ class ApiError(Exception):
 
 
 class Api(object):
+
     """Main API class.
 
     Params:
@@ -79,6 +82,7 @@ class Api(object):
         logger: logger for request/response logging.
 
     """
+
     def __init__(self, user, key, secure=True, opener=None, logger=None):
         self.user = user
         self.key = key
@@ -168,7 +172,7 @@ class Api(object):
         return self._request(path, **params)
 
     def _sign(self, **params):
-        """Calculates signature."""
+        """Calculate signature."""
         keys = params.keys()
         keys.sort()
         values = [params[key] for key in keys]

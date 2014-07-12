@@ -7,10 +7,13 @@ class UserData(models.Model):
     user = models.ForeignKey(User, verbose_name='пользователь')
     availability = models.BooleanField('доступность')
     one_on_one = models.BooleanField('1 - 1')
-    location = models.CharField('местонахождение', max_length=255, null=True, blank=True)
-    message = models.CharField('сообщение', max_length=255, null=True, blank=True)
+    location = models.CharField('местонахождение', max_length=255, null=True,
+                                blank=True)
+    message = models.CharField('сообщение', max_length=255, null=True,
+                               blank=True)
     phone = models.BigIntegerField('телефон')
-    timer_disable_time = models.DateTimeField('время отключения доступности по таймеру', null=True, blank=True)
+    timer_disable_time = models.DateTimeField(
+        'время отключения доступности по таймеру', null=True, blank=True)
     sleep_disable_time = models.TimeField('время автоотключения доступности')
     visible_to_all = models.BooleanField('видим всем', default=True)
 
@@ -23,7 +26,8 @@ class UserData(models.Model):
 
 
 class Visibility(models.Model):
-    user = models.ForeignKey(User, related_name='user', verbose_name='пользователь')
+    user = models.ForeignKey(User, related_name='user',
+                             verbose_name='пользователь')
     friend = models.ForeignKey(User, related_name='friend', verbose_name='друг')
     visible = models.BooleanField('видимость', default=True)
     visible_updated = models.BooleanField('видимость_обновленная', default=True)
