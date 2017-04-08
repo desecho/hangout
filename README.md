@@ -1,11 +1,10 @@
-#Hangout
+# Hangout
 
-The mobile web application on Python2/Django/jQuery to organize spontaneous meetings.
 The interface is in Russian.
 
 Ceased development.
 
-##Installation instructions
+## Installation instructions
 * Change/Add the following variables in settings.py:
     * DATABASES
     * GOOGLE_API_KEY
