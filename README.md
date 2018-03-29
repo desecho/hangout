@@ -1,9 +1,7 @@
-# Hangout
+# Hangout [DECOMISSIONED]
 
 The interface is in Russian.
-
-Ceased development.
-
+ 
 ## Installation instructions
 * Change/Add the following variables in settings.py:
     * DATABASES
